@@ -1,14 +1,15 @@
 {
-  "name": "ai-helper-backend",
+  "name": "domai-backend",
   "version": "1.0.0",
+  "description": "Backend for DomAI Chrome extension",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.18.2",
-    "node-fetch": "^3.4.1",
-    "dotenv": "^16.1.4"
-  },
-  "type": "module"
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2"
+  }
 }

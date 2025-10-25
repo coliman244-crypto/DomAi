@@ -1,42 +1,44 @@
 import express from 'express';
-import fetch from 'node-fetch';
+import cors from 'cors';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-// Allow CORS from your extension
-app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*"); // restrict later to your extension URL
-  res.header("Access-Control-Allow-Headers", "Content-Type");
-  next();
-});
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 app.post('/getAIAnswer', async (req, res) => {
-  const prompt = req.body.prompt;
-  if (!prompt) return res.status(400).json({ error: 'No prompt provided' });
+  const { prompt } = req.body;
+  if (!prompt) return res.status(400).json({ error: "No prompt provided" });
 
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
+    // Call OpenAI API here
+    // Example with fetch (you'll need node-fetch or axios):
+    /*
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-3.5-turbo',
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 150
+        model: "gpt-3.5-turbo",
+        messages: [{ role: "user", content: prompt }]
       })
     });
-
     const data = await response.json();
-    const answer = data.choices?.[0]?.message?.content || '[No response]';
-    res.json({ answer });
+    res.json({ answer: data.choices[0].message.content });
+    */
+
+    // For testing without OpenAI, just echo:
+    res.json({ answer: `You asked: ${prompt}` });
+
   } catch (err) {
-    res.status(500).json({ answer: `[Error: ${err.message}]` });
+    console.error(err);
+    res.status(500).json({ error: err.message });
   }
 });
 
